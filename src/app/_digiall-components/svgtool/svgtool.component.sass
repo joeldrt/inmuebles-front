@@ -1,0 +1,40 @@
+#dg-content-main
+  background-color: #6d6d6d
+
+.dg-section
+  padding: 0.9em
+  .jumbotron
+    border-radius: 0
+    padding: 0.9em
+
+  &.dg-section-options
+    .dg-btn-play
+      display: block
+      margin: 0 auto
+
+    #dgContainerSvgTool
+      display: block
+      width: 100%
+      max-width: 100%
+
+  //end - &.dg-section-options
+
+  &.dg-section-fileupload
+    .dg-cntUploadImage
+      .dg-col-preview
+        border-bottom: #81a2be
+        max-width: 100%
+        overflow: hidden
+
+        img
+          display: block
+          max-width: 81%
+
+      .dg-col-input
+        margin-top: 3em
+
+      .dg-content-btnsload
+        margin-bottom: 3em
+        margin-top: 3em
+
+  //end - &.dg-section-fileupload

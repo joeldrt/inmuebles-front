@@ -1,0 +1,152 @@
+<div class="dg-content-main" id="dg-content-main"
+     [ngSwitch]="sectionShow">
+
+  <div class="dg-section dg-section-options " id="dg-section-options"
+       *ngSwitchCase="'section-1'">
+    <div class="">
+      <div class="jumbotron">
+        <h3 class="box-title">
+          Seleccionar el tipo de acción
+        </h3>
+        <div class="row">
+          <!-- Cargar -->
+          <div class="col-sm-12 col-md-4 col-lg-4">
+            <div class="small-box bg-aqua">
+              <div class="inner">
+                <h3>Cargar</h3>
+                <p>Imagen para delimitar áreas</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-images"></i>
+              </div>
+              <a class="btn btn-app dg-btn-play"
+                (click)="openLoadingImage()">
+                <i class="fa fa-play"></i>
+                Iniciar
+              </a>
+            </div>
+          </div>
+          <!-- Editar -->
+          <div class="col-sm-12 col-lg-4 col-md-4">
+            <!-- small box -->
+            <div class="small-box bg-green">
+              <div class="inner">
+                <h3>Editar</h3>
+                <p>Determina los datos por zonas</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-pricetags"></i>
+              </div>
+              <a class="btn btn-app dg-btn-play"
+              (click)="editPV()">
+                <i class="fa fa-play"></i>
+                Iniciar
+              </a>
+            </div>
+          </div>
+          <!-- Visualizar -->
+          <div class="col-sm-12 col-lg-4 col-xs-12">
+            <!-- small box -->
+            <div class="small-box bg-yellow">
+              <div class="inner">
+                <h3>Visualizar</h3>
+                <p>
+                  La información referente a un plano
+                </p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-eye"></i>
+              </div>
+              <a class="btn btn-app dg-btn-play"
+              (click)="visualizePV()">
+                <i class="fa fa-play"></i>
+                Iniciar
+              </a>
+            </div>
+          </div><!-- end - col-sm12 -->
+          <!-- Test - obtain widthContaner -->
+          <div class="col-sm-6 col-md-6 col-lg-6"
+            id="dgContainerSvgTool">
+          </div>
+          <div class="col-sm-6 col-md-6 col-lg-6">
+          </div>
+        </div><!-- end - row -->
+      </div><!-- end Selección de tipo de acción -->
+    </div><!-- end container options [cargar - editar - consultar] -->
+  </div><!-- section-1 -->
+
+  <!-- Section  Load -->
+  <div class="dg-section dg-section-fileupload" id="dg-section-fileupload"
+    *ngSwitchCase="'section-2'" >
+
+    <div class="dg-cntUploadImage">
+      <div class="jumbotron">
+        <h3 class="box-title">
+          Selecciona la imagen
+        </h3>
+        <div class="row">
+          <form
+            enctype="multipart/form-data">
+            <div class="col-sm-12">
+              <div class="row">
+                <div class="col-sm-6 dg-col-input">
+                  <div>
+                    <div>
+                      <input class="btn btn-outline-primary btn-sm"
+                        type="file"
+                        (change)="uploadImage($event);"/>
+                    </div>
+                    <div class="row dg-content-btnsload">
+                      <div class="col-sm-12 col-md-6 col-lg-6">
+                        <button type="button dg-btn"
+                                class="btn btn-block btn-success btn-sm"
+                                (click)="acceptImage()"
+                                [disabled]="image.srcB64 == ''">
+                          Aceptar / Guardar
+                        </button>
+                      </div>
+                      <div class="col-sm-12 col-md-6 col-lg-6">
+                        <button type="button dg-btn"
+                                class="btn btn-block btn-danger btn-sm"
+                                [disabled]="image.srcB64 == ''">
+                          Cancelar
+                        </button>
+                      </div>
+                    </div><!-- end - dg-content-btnsload" -->
+                  </div>
+                </div>
+                <div class="col-sm-6 dg-col-preview">
+                  <div>
+                    <img #imgPreview
+                         src={{image.srcB64}}
+                         (load)="loadImagePreview($event)"
+                         alt=""/>
+                  </div>
+                </div>
+              </div>
+            </div><!-- end - content-col-12 -->
+          </form>
+        </div><!-- end - .row -->
+      </div><!-- end - jumbotron -->
+
+    </div> <!-- end - containerImageUpload -->
+  </div><!-- end - section-2 -->
+
+  <div *ngSwitchCase="'section-3'"
+    class="dg-section dg-section-svgimage" id="dg-section-svgimage">
+    <div
+      class="jumbotron">
+
+      <div>
+        <h3 class="box-title">
+          Plano
+        </h3>
+      </div>
+
+      <app-svg
+        [imageSvg]="imageSvg">
+      </app-svg>
+    </div><!-- -->
+  </div><!-- end - section-3 -->
+
+</div><!-- ngSwitch -->
