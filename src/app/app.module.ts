@@ -30,6 +30,7 @@ import {
   AlertService,
   AuthenticationService,
   AccountService,
+  InmuebleService,
 } from './_services';
 
 // helpers
@@ -59,6 +60,7 @@ import { JwtInterceptor } from './_helpers';
     AlertService,
     AuthenticationService,
     AccountService,
+    InmuebleService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,

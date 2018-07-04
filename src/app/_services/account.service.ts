@@ -28,4 +28,11 @@ export class AccountService {
       });
   }
 
+  isAccountPresent(): boolean {
+    if (localStorage.getItem('account')) {
+      return true;
+    }
+    return false;
+  }
+
 }
