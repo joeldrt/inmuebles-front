@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 
@@ -31,6 +32,8 @@ import {
   AuthenticationService,
   AccountService,
   InmuebleService,
+  ToasterService,
+  ImagenService,
 } from './_services';
 
 // helpers
@@ -54,6 +57,7 @@ import { JwtInterceptor } from './_helpers';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
+    NgbModalModule.forRoot(),
   ],
   providers: [
     AuthGuard,
@@ -61,11 +65,13 @@ import { JwtInterceptor } from './_helpers';
     AuthenticationService,
     AccountService,
     InmuebleService,
+    ImagenService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
       multi: true
     },
+    ToasterService,
   ],
   bootstrap: [AppComponent]
 })

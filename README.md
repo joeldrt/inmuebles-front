@@ -11,7 +11,7 @@ To run app
 
 3.- Paste them in remanager-front project under 'src/assets'
 
-4.- In a termnial go to remanager-front project root and run:
+4.- In a termnial go to inmuebles-front project root and run:
 
 yarn
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
 
-import { AuthenticationService } from '../../../_services/index';
+import {AuthenticationService, ToasterService} from '../../../_services/index';
 
 @Component({
   selector: 'app-login',
@@ -13,12 +13,12 @@ export class LoginComponent implements OnInit {
   model: any = {};
   loading = false;
   returnUrl: string;
-  error_message: any;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
+    private toasterService: ToasterService,
     ) { }
 
   ngOnInit() {
@@ -40,25 +40,21 @@ export class LoginComponent implements OnInit {
         (error: HttpErrorResponse) => {
           switch (error.status) {
             case 0: {
-              this.error_message = 'Error de comunicación con el servidor';
+              this.toasterService.error('Error de comunicación con el servidor');
               break;
             }
             case 401: {
-              this.error_message = 'Nombre de usuario o contraseña incorrecta';
+              this.toasterService.error('Nombre de usuario o contraseña incorrecta');
               break;
             }
             default: {
-              this.error_message = 'Error no conocido';
+              this.toasterService.error('Error no conocido');
               break;
             }
           }
           console.log(error);
           this.loading = false;
         });
-  }
-
-  closeAlert() {
-    this.error_message = null;
   }
 }
 

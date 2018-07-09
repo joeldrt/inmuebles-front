@@ -22,10 +22,10 @@
           <a (click)="reload()" class="btn btn-primary" role="button">
             <i class="fa fa-refresh"></i> Actualizar
           </a>
-          <a routerLink="sellers-new" class="btn btn-primary" role="button"
-             data-toggle="modal" data-target="#modal-new-inmueble">
-            <i class="fa fa-user-plus"></i> Agregar Inmueble
+          <a (click)="openInmuebleModal(newinmueblewindow)" class="btn btn-primary" role="button" >
+            <i class="fa fa-plus-square-o"></i> Agregar Inmueble
           </a>
+          <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
         </div>
 
         <!-- header of the table -->
@@ -34,8 +34,8 @@
             <thead>
             <tr>
               <th>Nombre</th>
-              <th>M2 Const</th>
-              <th>M2 Terre</th>
+              <th>M2 Construcción</th>
+              <th>M2 Terreno</th>
               <th>Niveles</th>
               <th>Precio Renta</th>
               <th>Precio Venta</th>
@@ -52,14 +52,21 @@
               <td>{{inmueble.precio_venta}}</td>
               <td>
                 <div class="btn-group">
-                  <a routerLink="" class="btn btn-default btn-sm" role="button">
+                  <a class="btn btn-default btn-sm" role="button">
                     <i class="fa fa-eye"></i>Detalle
                   </a>
-                  <a routerLink="" class="btn btn-primary btn-sm" role="button">
+                  <a (click)="setInmuebleImagesId(inmueble)"
+                      data-toggle="modal" data-target="#modal-foto-manager"
+                     class="btn btn-primary btn-sm" role="button">
+                    <i class="fa fa-photo"></i>Fotos
+                  </a>
+                  <a (click)="openInmuebleModal(newinmueblewindow, inmueble)"
+                      class="btn btn-primary btn-sm" role="button">
                     <i class="fa fa-edit"></i>Editar
                   </a>
-                  <a (click)="setIdToDelete(inmueble.id)" class="btn btn-danger btn-sm" role="button"
-                     data-toggle="modal" data-target="#modal-delete-inmueble">
+                  <a (click)="setIdToDelete(inmueble.id, inmueble.nombre)"
+                     data-toggle="modal" data-target="#modal-delete-inmueble"
+                     class="btn btn-danger btn-sm" role="button">
                     <i class="fa fa-eraser"></i>Borrar
                   </a>
                 </div>
@@ -74,6 +81,8 @@
 </section>
 
 <!-- modal windows -->
+
+<!-- delete modal window -->
 <div class="modal fade" id="modal-delete-inmueble" style="display: none;">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -83,7 +92,7 @@
         <h4 class="modal-title">Borrar Inmueble</h4>
       </div>
       <div class="modal-body">
-        <p>Vas a borrar el inmueble con id: {{inmueble_borrar_id}}. Esta accion no puede ser revertida</p>
+        <p>Vas a borrar el inmueble con id: {{inmueble_borrar_nombre}}. Esta accion no puede ser revertida. ¿Deseas continuar?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default pull-left" data-dismiss="modal" (click)="clearIdToDelete()">Cancelar</button>
@@ -95,33 +104,164 @@
   <!-- /.modal-dialog -->
 </div>
 
-<div class="modal fade" id="modal-new-inmueble" style="display: none;">
+<!-- new modal window -->
+<ng-template #newinmueblewindow>
+  <div class="modal-header">
+    <button type="button" class="close" (click)="closeInmuebleModal()" aria-label="Close">
+      <span aria-hidden="true">×</span></button>
+    <h4 *ngIf="!current_inmueble.id" class="modal-title">Nuevo Inmueble</h4>
+    <h4 *ngIf="current_inmueble.id" class="modal-title">Editar Inmueble</h4>
+  </div>
+  <div class="modal-body">
+    <form #newInmuebleForm="ngForm" novalidate>
+      <div class="box-body">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" class="form-control" id="nombre" name="nom" placeholder="Ingresa un nombre"
+                 #nombre="ngModel" [(ngModel)]="current_inmueble.nombre" required>
+          <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)" class="help-block text-red">Nombre requerido</div>
+        </div>
+
+        <div class="form-group">
+          <label for="m2_terreno">M2 terreno</label>
+          <input type="text" class="form-control" id="m2_terreno" name="m2t" placeholder="M2 terreno"
+                 #m2_terreno="ngModel" [(ngModel)]="current_inmueble.m2_terreno" required>
+          <div *ngIf="m2_terreno.invalid && (m2_terreno.dirty || m2_terreno.touched)" class="help-block text-red">Número de m2 de terreno requerido</div>
+        </div>
+
+        <div class="form-group">
+          <label for="m2_construccion">M2 construccion</label>
+          <input type="text" class="form-control" id="m2_construccion" name="m2c" placeholder="M2 construccion"
+                 #m2_construccion="ngModel" [(ngModel)]="current_inmueble.m2_construccion">
+        </div>
+
+        <div class="form-group">
+          <label for="niveles">Niveles</label>
+          <input type="text" class="form-control" id="niveles" name="niv" placeholder="Niveles"
+                 #niveles="ngModel" [(ngModel)]="current_inmueble.niveles">
+        </div>
+
+        <div class="form-group">
+          <label for="recamaras">Recamaras</label>
+          <input type="text" class="form-control" id="recamaras" name="reca" placeholder="Recamaras"
+                 #recamaras="ngModel" [(ngModel)]="current_inmueble.recamaras">
+        </div>
+
+        <div class="form-group">
+          <label for="banos">Baños</label>
+          <input type="text" class="form-control" id="banos" name="bn" placeholder="Baños"
+                 #banos="ngModel" [(ngModel)]="current_inmueble.banos">
+        </div>
+
+        <div class="form-group">
+          <label for="cajones_estacionamiento">Cajones estacionamiento</label>
+          <input type="text" class="form-control" id="cajones_estacionamiento" name="caes" placeholder="Num cajonse de estacionamiento"
+                 #cajones_estacionamiento="ngModel" [(ngModel)]="current_inmueble.cajones_estacionamiento">
+        </div>
+
+        <div class="form-group">
+          <label for="amenidades">Amenidades</label>
+          <input type="text" class="form-control" id="amenidades" name="ame" placeholder="Amenidades"
+                 #amenidades="ngModel" [(ngModel)]="current_inmueble.amenidades">
+        </div>
+
+        <div class="form-group">
+          <label for="descripcion">Descripción</label>
+          <input type="text" class="form-control" id="descripcion" name="desc" placeholder="Descripción"
+                 #descripcion="ngModel" [(ngModel)]="current_inmueble.descripcion">
+        </div>
+
+        <div class="form-group">
+          <label for="precio_venta">Precio venta</label>
+          <input type="text" class="form-control" id="precio_venta" name="prv" placeholder="Precio venta"
+                 #precio_venta="ngModel" [(ngModel)]="current_inmueble.precio_venta">
+        </div>
+
+        <div class="form-group">
+          <label for="precio_renta">Precio renta</label>
+          <input type="text" class="form-control" id="precio_renta" name="prr" placeholder="Precio renta"
+                 #precio_renta="ngModel" [(ngModel)]="current_inmueble.precio_renta">
+        </div>
+
+        <!-- direccion -->
+        <div class="form-group">
+          <label for="calle">Calle</label>
+          <input type="text" class="form-control" id="calle" name="clle" placeholder="Calle"
+                 #calle="ngModel" [(ngModel)]="current_inmueble.calle" required>
+          <div *ngIf="calle.invalid && (calle.dirty || calle.touched)" class="help-block text-red">Calle Requerida</div>
+        </div>
+
+        <div class="form-group">
+          <label for="num_exterior">Número exterior</label>
+          <input type="text" class="form-control" id="num_exterior" name="numex" placeholder="Número exterior"
+                 #num_exterior="ngModel" [(ngModel)]="current_inmueble.num_exterior">
+        </div>
+
+        <div class="form-group">
+          <label for="num_interior">Número interior</label>
+          <input type="text" class="form-control" id="num_interior" name="numint" placeholder="Número interior"
+                 #num_interior="ngModel" [(ngModel)]="current_inmueble.num_interior">
+        </div>
+
+        <div class="form-group">
+          <label for="colonia">Colonia</label>
+          <input type="text" class="form-control" id="colonia" name="col" placeholder="Colonia"
+                 #colonia="ngModel" [(ngModel)]="current_inmueble.colonia">
+        </div>
+
+        <div class="form-group">
+          <label for="municipio">Municipio</label>
+          <input type="text" class="form-control" id="municipio" name="mun" placeholder="Municipio"
+                 #municipio="ngModel" [(ngModel)]="current_inmueble.municipio">
+        </div>
+
+        <div class="form-group">
+          <label for="estado">Estado</label>
+          <input type="text" class="form-control" id="estado" name="estdo" placeholder="Estado"
+                 #estado="ngModel" [(ngModel)]="current_inmueble.estado">
+        </div>
+
+        <div class="form-group">
+          <label for="pais">País</label>
+          <input type="text" class="form-control" id="pais" name="country" placeholder="País"
+                 #pais="ngModel" [(ngModel)]="current_inmueble.pais">
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" (click)="closeInmuebleModal()">Cancelar</button>
+        <button *ngIf="!current_inmueble.id" type="button" class="btn btn-primary" (click)="save()" [disabled]="!newInmuebleForm.form.valid">Guardar</button>
+        <button *ngIf="current_inmueble.id" type="button" class="btn btn-primary" (click)="edit()" [disabled]="!newInmuebleForm.form.valid">Editar</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<!-- fotos modal window -->
+<div class="modal fade" id="modal-foto-manager" style="display: none;">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content" *ngIf="inmueble_images">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span></button>
-        <h4 class="modal-title">Nuevo Inmueble</h4>
+        <h4 class="modal-title">Fotos: {{inmueble_images.nombre}}</h4>
       </div>
       <div class="modal-body">
-        <form>
-          <div class="box-body">
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" class="form-control" id="name" required>
-            </div>
-
-            <div class="form-group">
-              <label for="alterEgo">Alter Ego</label>
-              <input type="text" class="form-control" id="alterEgo">
-            </div>
-
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-primary" data-dismiss="modal">Guardar</button>
-            </div>
+        <div class="form-group">
+          <label for="imagenasubir">Imagen...</label>
+          <input type="file" id="imagenasubir" (change)="onFileChange($event)" #image_input_field>
+          <button type="button" class="btn btn-sm btn-default" (click)="image_input_field.value=''">clear file</button>
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-primary" [disabled]="!image_input_field.value" (click)="saveImage()">Guardar</button>
+        </div>
+        <div *ngIf="inmueble_images.fotos">
+          <div *ngFor="let source_url of inmueble_images.fotos.reverse()">
+            <img [src]="'http://localhost:5000/foto/'+inmueble_images.id+'/'+source_url" style="width: 150px" [alt]="source_url">
           </div>
-        </form>
+        </div>
+      </div>
+      <div class="modal-footer">
       </div>
     </div>
     <!-- /.modal-content -->
