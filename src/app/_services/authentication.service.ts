@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
@@ -35,8 +35,24 @@ export class AuthenticationService {
       });
   }
 
+  refreshAccessToken(): Observable<HttpResponse<any>> {
+    if (!localStorage.getItem('refresh_token')) {
+      // redirect to login page prefered, but decided by the caller
+      return null;
+    }
+    const body = { 'refresh_requested' : true };
+    return this.http.post<any>(this.API_URL + 'api/token/refresh', body)
+      .map(token => {
+        if (token.access_token) {
+          localStorage.setItem('access_token', token.access_token);
+        }
+
+        return token;
+      });
+  }
+
   logout() {
-    if (localStorage.getItem('access_token')) {
+    if (!localStorage.getItem('access_token')) {
       return;
     }
 
