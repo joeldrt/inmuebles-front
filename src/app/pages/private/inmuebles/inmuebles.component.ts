@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { Inmueble } from '../../../_models';
 import { InmuebleService, AccountService, AuthenticationService, ImagenService } from '../../../_services';
 import { ToasterService } from '../../../_services/toaster.service';
 import { InmuebleImageEnvelope } from '../../../_models/inmueble-image-envelope';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-inmuebles',
@@ -13,6 +14,8 @@ import { InmuebleImageEnvelope } from '../../../_models/inmueble-image-envelope'
   styleUrls: ['./inmuebles.component.scss', ]
 })
 export class InmueblesComponent implements OnInit {
+  image_resource_url_base: string;
+
   @ViewChild('image_input_field') image_input_field: ElementRef;
   inmueble_modal_window: NgbModalRef;
   current_inmueble: Inmueble;
@@ -38,6 +41,7 @@ export class InmueblesComponent implements OnInit {
     private imagenService: ImagenService,
   ) {
     this.current_inmueble = new Inmueble();
+    this.image_resource_url_base = environment.API_URL;
   }
 
   ngOnInit() {
@@ -131,10 +135,10 @@ export class InmueblesComponent implements OnInit {
               // nothing to do... we must perform a login... redirect to it
               this.router.navigate(['/login']);
             });
+        } else {
+          this.toasterService.error('Error: ' + error.status + ', ' + error.error.message);
         }
-        if (error.status === 0) {
-          this.toasterService.error('Error de conexión');
-        }
+
       });
   }
 
@@ -162,9 +166,8 @@ export class InmueblesComponent implements OnInit {
               // nothing to do... we must perform a login... redirect to it
               this.router.navigate(['/login']);
             });
-        }
-        if (error.status === 0) {
-          this.toasterService.error('Error de conexión');
+        } else {
+          this.toasterService.error('Error: ' + error.status + ', ' + error.error.message);
         }
       });
   }
@@ -180,7 +183,8 @@ export class InmueblesComponent implements OnInit {
         this.toasterService.success('El inmueble fue borrado correctamente');
       },
       (error: HttpErrorResponse) => {
-        if (error.status === 401 && this.accountService.isAccountPresent()) {
+        // we add also status 500, because thats the status number when raising ExpiredSignatureError('Signature has expired')
+        if ((error.status === 401 || error.status === 500) && this.accountService.isAccountPresent()) {
           const refreshcall = this.authenticationService.refreshAccessToken();
           if (refreshcall === null) {
             // nothing to do... we must perform a login... redirect to it
@@ -195,9 +199,8 @@ export class InmueblesComponent implements OnInit {
               // nothing to do... we must perform a login... redirect to it
               this.router.navigate(['/login']);
             });
-        }
-        if (error.status === 0) {
-          this.toasterService.error('Error de conexión');
+        } else {
+          this.toasterService.error('Error: ' + error.status + ', ' + error.error.message);
         }
       });
   }
@@ -244,9 +247,8 @@ export class InmueblesComponent implements OnInit {
               // nothing to do... we must perform a login... redirect to it
               this.router.navigate(['/login']);
             });
-        }
-        if (error.status === 0) {
-          this.toasterService.error('Error de conexión');
+        } else {
+          this.toasterService.error('Error: ' + error.status + ', ' + error.error.message);
         }
       });
   }
