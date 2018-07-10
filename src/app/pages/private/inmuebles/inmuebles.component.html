@@ -124,38 +124,38 @@
 
         <div class="form-group">
           <label for="m2_terreno">M2 terreno</label>
-          <input type="text" class="form-control" id="m2_terreno" name="m2t" placeholder="M2 terreno"
+          <input type="number" class="form-control" id="m2_terreno" name="m2t" placeholder="M2 terreno"
                  #m2_terreno="ngModel" [(ngModel)]="current_inmueble.m2_terreno" required>
           <div *ngIf="m2_terreno.invalid && (m2_terreno.dirty || m2_terreno.touched)" class="help-block text-red">Número de m2 de terreno requerido</div>
         </div>
 
         <div class="form-group">
           <label for="m2_construccion">M2 construccion</label>
-          <input type="text" class="form-control" id="m2_construccion" name="m2c" placeholder="M2 construccion"
+          <input type="number" class="form-control" id="m2_construccion" name="m2c" placeholder="M2 construccion"
                  #m2_construccion="ngModel" [(ngModel)]="current_inmueble.m2_construccion">
         </div>
 
         <div class="form-group">
           <label for="niveles">Niveles</label>
-          <input type="text" class="form-control" id="niveles" name="niv" placeholder="Niveles"
+          <input type="number" class="form-control" id="niveles" name="niv" placeholder="Niveles"
                  #niveles="ngModel" [(ngModel)]="current_inmueble.niveles">
         </div>
 
         <div class="form-group">
           <label for="recamaras">Recamaras</label>
-          <input type="text" class="form-control" id="recamaras" name="reca" placeholder="Recamaras"
+          <input type="number" class="form-control" id="recamaras" name="reca" placeholder="Recamaras"
                  #recamaras="ngModel" [(ngModel)]="current_inmueble.recamaras">
         </div>
 
         <div class="form-group">
           <label for="banos">Baños</label>
-          <input type="text" class="form-control" id="banos" name="bn" placeholder="Baños"
+          <input type="number" class="form-control" id="banos" name="bn" placeholder="Baños"
                  #banos="ngModel" [(ngModel)]="current_inmueble.banos">
         </div>
 
         <div class="form-group">
           <label for="cajones_estacionamiento">Cajones estacionamiento</label>
-          <input type="text" class="form-control" id="cajones_estacionamiento" name="caes" placeholder="Num cajonse de estacionamiento"
+          <input type="number" class="form-control" id="cajones_estacionamiento" name="caes" placeholder="Num cajonse de estacionamiento"
                  #cajones_estacionamiento="ngModel" [(ngModel)]="current_inmueble.cajones_estacionamiento">
         </div>
 
@@ -173,13 +173,13 @@
 
         <div class="form-group">
           <label for="precio_venta">Precio venta</label>
-          <input type="text" class="form-control" id="precio_venta" name="prv" placeholder="Precio venta"
+          <input type="number" class="form-control" id="precio_venta" name="prv" placeholder="Precio venta"
                  #precio_venta="ngModel" [(ngModel)]="current_inmueble.precio_venta">
         </div>
 
         <div class="form-group">
           <label for="precio_renta">Precio renta</label>
-          <input type="text" class="form-control" id="precio_renta" name="prr" placeholder="Precio renta"
+          <input type="number" class="form-control" id="precio_renta" name="prr" placeholder="Precio renta"
                  #precio_renta="ngModel" [(ngModel)]="current_inmueble.precio_renta">
         </div>
 
@@ -257,7 +257,7 @@
         </div>
         <div *ngIf="inmueble_images.fotos">
           <div *ngFor="let source_url of inmueble_images.fotos.reverse()">
-            <img [src]="'http://localhost:5000/foto/'+inmueble_images.id+'/'+source_url" style="width: 150px" [alt]="source_url">
+            <img [src]="image_resource_url_base+'foto/'+inmueble_images.id+'/'+source_url" style="width: 150px" [alt]="source_url">
           </div>
         </div>
       </div>

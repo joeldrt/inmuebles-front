@@ -48,11 +48,10 @@ export class LoginComponent implements OnInit {
               break;
             }
             default: {
-              this.toasterService.error('Error no conocido');
+              this.toasterService.error('Error: ' + error.status + ', ' + error.error.message);
               break;
             }
           }
-          console.log(error);
           this.loading = false;
         });
   }

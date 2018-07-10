@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "remanager": {
+    "inmuebles-front": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/remanager",
+            "outputPath": "dist/inmuebles-front",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -54,18 +54,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "remanager:build"
+            "browserTarget": "inmuebles-front:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "remanager:build:production"
+              "browserTarget": "inmuebles-front:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "remanager:build"
+            "browserTarget": "inmuebles-front:build"
           }
         },
         "test": {
@@ -99,7 +99,7 @@
         }
       }
     },
-    "remanager-e2e": {
+    "inmuebles-front-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -107,7 +107,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "remanager:serve"
+            "devServerTarget": "inmuebles-front:serve"
           }
         },
         "lint": {
@@ -122,5 +122,5 @@
       }
     }
   },
-  "defaultProject": "remanager"
+  "defaultProject": "inmuebles-front"
 }

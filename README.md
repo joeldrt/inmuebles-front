@@ -9,7 +9,7 @@ To run app
 - dist
 - plugins
 
-3.- Paste them in remanager-front project under 'src/assets'
+3.- Paste them in inmuebles-front project under 'src/assets'
 
 4.- In a termnial go to inmuebles-front project root and run:
 
