@@ -20,4 +20,8 @@ export class ImagenService {
   upload(inmueble_image_envelope: InmuebleImageEnvelope): Observable<HttpResponse<any>> {
     return this.http.post<any>(this.resourceUrl + '/upload', inmueble_image_envelope, {observe: 'response'});
   }
+
+  delete(inmueble_id: string, foto_path: string): Observable<HttpResponse<any>> {
+    return this.http.delete<any>(this.resourceUrl + '/delete/' + inmueble_id + '/' + foto_path, { observe: 'response'});
+  }
 }
