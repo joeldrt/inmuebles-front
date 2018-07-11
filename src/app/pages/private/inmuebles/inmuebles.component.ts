@@ -120,7 +120,7 @@ export class InmueblesComponent implements OnInit {
         this.closeInmuebleModal();
       },
       (error: HttpErrorResponse) => {
-        if (error.status === 401 && this.accountService.isAccountPresent()) {
+        if ((error.status === 401 || error.status === 500) && this.accountService.isAccountPresent()) {
           const refreshcall = this.authenticationService.refreshAccessToken();
           if (refreshcall === null) {
             // nothing to do... we must perform a login... redirect to it
@@ -151,7 +151,7 @@ export class InmueblesComponent implements OnInit {
         this.closeInmuebleModal();
       },
       (error: HttpErrorResponse) => {
-        if (error.status === 401 && this.accountService.isAccountPresent()) {
+        if ((error.status === 401 || error.status === 500) && this.accountService.isAccountPresent()) {
           const refreshcall = this.authenticationService.refreshAccessToken();
           if (refreshcall === null) {
             // nothing to do... we must perform a login... redirect to it
@@ -232,7 +232,7 @@ export class InmueblesComponent implements OnInit {
         this.inmueble_images.fotos.push(value.body.message);
       },
       (error: HttpErrorResponse) => {
-        if (error.status === 401 && this.accountService.isAccountPresent()) {
+        if ((error.status === 401 || error.status === 500) && this.accountService.isAccountPresent()) {
           const refreshcall = this.authenticationService.refreshAccessToken();
           if (refreshcall === null) {
             // nothing to do... we must perform a login... redirect to it
@@ -263,7 +263,7 @@ export class InmueblesComponent implements OnInit {
         // this.toasterService.success('Foto borrada'); # issue flicker
       },
       (error) => {
-        if (error.status === 401 && this.accountService.isAccountPresent()) {
+        if ((error.status === 401 || error.status === 500) && this.accountService.isAccountPresent()) {
           const refreshcall = this.authenticationService.refreshAccessToken();
           if (refreshcall === null) {
             // nothing to do... we must perform a login... redirect to it
