@@ -29,7 +29,7 @@ export class ToasterService {
       'closeButton': false,
       'debug': false,
       'newestOnTop': false,
-      // 'progressBar': true,
+      'progressBar': true,
       'positionClass': 'toast-bottom-right',
       'preventDuplicates': false,
       'onclick': null,
