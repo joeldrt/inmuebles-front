@@ -228,7 +228,7 @@ export class InmueblesComponent implements OnInit {
     this.imagenService.upload(this.image_envelope).subscribe(
       (value: HttpResponse<any>) => {
         this.image_input_field.nativeElement.value = '';
-        this.toasterService.success('Foto guardada');
+        // this.toasterService.success('Foto guardada'); # issue flicker
         this.inmueble_images.fotos.push(value.body.message);
       },
       (error: HttpErrorResponse) => {
@@ -260,7 +260,7 @@ export class InmueblesComponent implements OnInit {
         if (index > -1) {
           this.inmueble_images.fotos.splice(index, 1);
         }
-        this.toasterService.success('Foto borrada');
+        // this.toasterService.success('Foto borrada'); # issue flicker
       },
       (error) => {
         if (error.status === 401 && this.accountService.isAccountPresent()) {
