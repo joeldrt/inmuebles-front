@@ -6,7 +6,7 @@
         <div class="box-header">
           <h3 class="box-title">Lista de inmuebles</h3>
 
-          <div class="box-tools">
+          <!--<div class="box-tools">
             <div class="input-group input-group-sm" style="width: 150px;">
               <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
 
@@ -14,7 +14,7 @@
                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
               </div>
             </div>
-          </div>
+          </div>-->
         </div>
 
         <!-- module actions -->
@@ -48,16 +48,13 @@
               <td>{{inmueble.m2_construccion}}</td>
               <td>{{inmueble.m2_terreno}}</td>
               <td>{{inmueble.niveles}}</td>
-              <td>{{inmueble.precio_renta}}</td>
-              <td>{{inmueble.precio_venta}}</td>
+              <td>{{inmueble.precio_renta | currency:'MXN' }}</td>
+              <td>{{inmueble.precio_venta | currency:'MXN' }}</td>
               <td>
                 <div class="btn-group">
-                  <a class="btn btn-default btn-sm" role="button">
-                    <i class="fa fa-eye"></i>Detalle
-                  </a>
                   <a (click)="setInmuebleImagesId(inmueble)"
                       data-toggle="modal" data-target="#modal-foto-manager"
-                     class="btn btn-primary btn-sm" role="button">
+                     class="btn btn-default btn-sm" role="button">
                     <i class="fa fa-photo"></i>Fotos
                   </a>
                   <a (click)="openInmuebleModal(newinmueblewindow, inmueble)"
@@ -155,7 +152,7 @@
 
         <div class="form-group">
           <label for="cajones_estacionamiento">Cajones estacionamiento</label>
-          <input type="number" class="form-control" id="cajones_estacionamiento" name="caes" placeholder="Num cajonse de estacionamiento"
+          <input type="number" class="form-control" id="cajones_estacionamiento" name="caes" placeholder="Num cajones de estacionamiento"
                  #cajones_estacionamiento="ngModel" [(ngModel)]="current_inmueble.cajones_estacionamiento">
         </div>
 
@@ -250,14 +247,26 @@
         <div class="form-group">
           <label for="imagenasubir">Imagen...</label>
           <input type="file" id="imagenasubir" (change)="onFileChange($event)" #image_input_field>
-          <button type="button" class="btn btn-sm btn-default" (click)="image_input_field.value=''">clear file</button>
+          <div class="btn-group" style="margin-top: 10px">
+            <button type="button" class="btn btn-sm btn-default" (click)="image_input_field.value=''">cancelar</button>
+            <button type="button" class="btn btn-sm btn-primary" [disabled]="!image_input_field.value" (click)="saveImage()">guardar</button>
+          </div>
         </div>
-        <div class="form-group">
-          <button type="button" class="btn btn-primary" [disabled]="!image_input_field.value" (click)="saveImage()">Guardar</button>
-        </div>
-        <div *ngIf="inmueble_images.fotos">
-          <div *ngFor="let source_url of inmueble_images.fotos.reverse()">
-            <img [src]="image_resource_url_base+'foto/'+inmueble_images.id+'/'+source_url" style="width: 150px" [alt]="source_url">
+        <div *ngIf="inmueble_images.fotos" class="row">
+          <div class="col-md-4" *ngFor="let source_url of inmueble_images.fotos.reverse()" >
+            <div class="box box-success">
+              <div class="box-header with-border">
+                <div class="box-tools pull-right">
+                  <button type="button" class="btn btn-box-tool" (click)="removeImage(inmueble_images.id, source_url)">
+                    <i class="fa fa-times"></i>
+                  </button>
+                </div>
+                <div class="box-body" style="height: 150px; overflow: hidden; text-align: center">
+                  <img [src]="image_resource_url_base+'foto/'+inmueble_images.id+'/'+source_url"
+                       style="height: 100%; display: inline-block;" [alt]="source_url">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

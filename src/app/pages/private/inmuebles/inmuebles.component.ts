@@ -252,4 +252,35 @@ export class InmueblesComponent implements OnInit {
         }
       });
   }
+
+  removeImage(inmueble_id: string, source_url: string) {
+    this.imagenService.delete(inmueble_id, source_url).subscribe(
+      (value) => {
+        const index = this.inmueble_images.fotos.indexOf(source_url, 0);
+        if (index > -1) {
+          this.inmueble_images.fotos.splice(index, 1);
+        }
+        this.toasterService.success('Foto borrada');
+      },
+      (error) => {
+        if (error.status === 401 && this.accountService.isAccountPresent()) {
+          const refreshcall = this.authenticationService.refreshAccessToken();
+          if (refreshcall === null) {
+            // nothing to do... we must perform a login... redirect to it
+            this.router.navigate(['/login']);
+          }
+          refreshcall.subscribe(
+            value => {
+              // call method again after refreshing token
+              this.removeImage(inmueble_id, source_url);
+            },
+            (errorRefresh: HttpErrorResponse) => {
+              // nothing to do... we must perform a login... redirect to it
+              this.router.navigate(['/login']);
+            });
+        } else {
+          this.toasterService.error('Error: ' + error.status + ', ' + error.error.message);
+        }
+      });
+  }
 }
