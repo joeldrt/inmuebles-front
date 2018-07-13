@@ -22,6 +22,7 @@ export class Inmueble {
     public pais?: string,
     public tags?: [string],
     public fotos?: [string],
+    public status?: number,
   ) {
   }
 }
