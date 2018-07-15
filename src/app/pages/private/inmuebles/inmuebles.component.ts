@@ -21,6 +21,8 @@ export class InmueblesComponent implements OnInit {
   current_inmueble: Inmueble;
   inmueble_modal_type: string;
 
+  refresh_already_performed = false;
+
   inmueble_images: Inmueble;
   image_envelope: InmuebleImageEnvelope;
 
@@ -90,7 +92,7 @@ export class InmueblesComponent implements OnInit {
   }
 
   setEditInmuebleObject(inmueble: Inmueble) {
-    this.current_inmueble = inmueble;
+    this.current_inmueble = Object.assign({}, inmueble);
   }
 
   openInmuebleModal(content: any, inmueble?: Inmueble) {
@@ -151,22 +153,27 @@ export class InmueblesComponent implements OnInit {
         this.closeInmuebleModal();
       },
       (error: HttpErrorResponse) => {
-        if ((error.status === 401 || error.status === 500) && this.accountService.isAccountPresent()) {
+        if ((error.status === 401 || error.status === 500)
+          && this.accountService.isAccountPresent()
+          && !this.refresh_already_performed) {
           const refreshcall = this.authenticationService.refreshAccessToken();
           if (refreshcall === null) {
+            this.refresh_already_performed = false;
             // nothing to do... we must perform a login... redirect to it
             this.router.navigate(['/login']);
           }
+          this.refresh_already_performed = true;
           refreshcall.subscribe(
             value1 => {
               // call method again after refreshing token
-              this.toasterService.warning('Intenta guardar nuevamente');
+              this.save();
             },
             (errorRefresh: HttpErrorResponse) => {
               // nothing to do... we must perform a login... redirect to it
               this.router.navigate(['/login']);
             });
         } else {
+          this.refresh_already_performed = false;
           this.toasterService.error('Error: ' + error.status + ', ' + error.error.message);
         }
       });
@@ -184,12 +191,16 @@ export class InmueblesComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         // we add also status 500, because thats the status number when raising ExpiredSignatureError('Signature has expired')
-        if ((error.status === 401 || error.status === 500) && this.accountService.isAccountPresent()) {
+        if ((error.status === 401 || error.status === 500)
+          && this.accountService.isAccountPresent()
+          && !this.refresh_already_performed) {
           const refreshcall = this.authenticationService.refreshAccessToken();
           if (refreshcall === null) {
+            this.refresh_already_performed = false;
             // nothing to do... we must perform a login... redirect to it
             this.router.navigate(['/login']);
           }
+          this.refresh_already_performed = true;
           refreshcall.subscribe(
             value => {
               // call method again after refreshing token
@@ -200,6 +211,7 @@ export class InmueblesComponent implements OnInit {
               this.router.navigate(['/login']);
             });
         } else {
+          this.refresh_already_performed = false;
           this.toasterService.error('Error: ' + error.status + ', ' + error.error.message);
         }
       });
@@ -282,5 +294,9 @@ export class InmueblesComponent implements OnInit {
           this.toasterService.error('Error: ' + error.status + ', ' + error.error.message);
         }
       });
+  }
+
+  getReverseOfImagesArray(): string[] {
+    return this.inmueble_images.fotos.reverse();
   }
 }

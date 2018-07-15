@@ -10,7 +10,7 @@ import { User } from '../../../_models';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-  user: any;
+  user: User;
   isNavbarCollapsed: boolean;
 
   constructor(
@@ -34,5 +34,9 @@ export class MenuComponent implements OnInit {
 
   collapseNavbar() {
     this.isNavbarCollapsed = true;
+  }
+
+  isAdmin(): boolean {
+    return this.accountService.hasRole('admin');
   }
 }

@@ -4,3 +4,4 @@ export * from './account.service';
 export * from './inmueble.service';
 export * from './toaster.service';
 export * from './imagen.service';
+export * from './user.service';

@@ -79,7 +79,7 @@
 
 <!-- modal windows -->
 
-<!-- delete modal window -->
+<!-- inmueble delete modal window -->
 <div class="modal fade" id="modal-delete-inmueble" style="display: none;">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -101,7 +101,7 @@
   <!-- /.modal-dialog -->
 </div>
 
-<!-- new modal window -->
+<!-- inmueble new/edit modal window -->
 <ng-template #newinmueblewindow>
   <div class="modal-header">
     <button type="button" class="close" (click)="closeInmuebleModal()" aria-label="Close">
@@ -253,7 +253,7 @@
           </div>
         </div>
         <div *ngIf="inmueble_images.fotos" class="row">
-          <div class="col-md-4" *ngFor="let source_url of inmueble_images.fotos.reverse()" >
+          <div class="col-md-4" *ngFor="let source_url of getReverseOfImagesArray()" >
             <div class="box box-success">
               <div class="box-header with-border">
                 <div class="box-tools pull-right">
