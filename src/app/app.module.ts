@@ -7,7 +7,7 @@ import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 
-// layout components && services
+// layout components
 import {
   PrivateComponent,
   HeaderComponent,
@@ -34,10 +34,12 @@ import {
   InmuebleService,
   ToasterService,
   ImagenService,
+  UserService,
 } from './_services';
 
 // helpers
 import { JwtInterceptor } from './_helpers';
+import { UsuariosComponent } from './pages/private/usuarios/usuarios.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,7 @@ import { JwtInterceptor } from './_helpers';
     PublicComponent,
     LoginComponent,
     InmueblesComponent,
+    UsuariosComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,6 +69,7 @@ import { JwtInterceptor } from './_helpers';
     AccountService,
     InmuebleService,
     ImagenService,
+    UserService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,

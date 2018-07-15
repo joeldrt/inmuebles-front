@@ -35,4 +35,16 @@ export class AccountService {
     return false;
   }
 
+  getCurrentAccount(): User {
+    return JSON.parse(localStorage.getItem('account'));
+  }
+
+  hasRole(role: string): boolean {
+    const user = JSON.parse(localStorage.getItem('account'));
+    if (user && user.roles && user.roles.indexOf(role) > -1 ) {
+      return true;
+    }
+    return false;
+  }
+
 }
