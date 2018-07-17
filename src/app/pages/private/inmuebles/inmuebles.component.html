@@ -245,15 +245,15 @@
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label for="imagenasubir">Imagen...</label>
-          <input type="file" id="imagenasubir" (change)="onFileChange($event)" #image_input_field>
+          <input type="file" id="imagenasubir" (change)="onFileChange($event)" #image_input_field multiple>
           <div class="btn-group" style="margin-top: 10px">
-            <button type="button" class="btn btn-sm btn-default" (click)="image_input_field.value=''">cancelar</button>
-            <button type="button" class="btn btn-sm btn-primary" [disabled]="!image_input_field.value" (click)="saveImage()">guardar</button>
+            <button type="button" class="btn btn-sm btn-default" (click)="image_input_field.value=''">limpiar</button>
+            <button type="button" class="btn btn-sm btn-primary" [disabled]="!image_input_field.value" (click)="uploadImages()">cargar</button>
+            <img *ngIf="uploading_images" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
           </div>
         </div>
         <div *ngIf="inmueble_images.fotos" class="row">
-          <div class="col-md-4" *ngFor="let source_url of getReverseOfImagesArray()" >
+          <div class="col-md-4" *ngFor="let source_url of inmueble_images.fotos; let pos = index;" >
             <div class="box box-success">
               <div class="box-header with-border">
                 <div class="box-tools pull-right">
@@ -265,12 +265,17 @@
                   <img [src]="image_resource_url_base+'foto/'+inmueble_images.id+'/'+source_url"
                        style="height: 100%; display: inline-block;" [alt]="source_url">
                 </div>
+                <div class="box-footer">
+                  <button type="button" class="btn btn-primary btn-sm pull-left" (click)="swtichImage(pos, 0)" *ngIf="!isFirstImage(pos)">antes</button>
+                  <button type="button" class="btn btn-primary btn-sm pull-right" (click)="swtichImage(pos, 1)" *ngIf="!isLastImage(pos)">despues</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-warning pull-right" (click)="saveImagePositionChanged()" *ngIf="images_position_change">Guardar cambio de posiciones</button>
       </div>
     </div>
     <!-- /.modal-content -->
