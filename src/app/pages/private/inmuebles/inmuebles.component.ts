@@ -24,7 +24,9 @@ export class InmueblesComponent implements OnInit {
   refresh_already_performed = false;
 
   inmueble_images: Inmueble;
-  image_envelope: InmuebleImageEnvelope;
+  image_envelopes: InmuebleImageEnvelope[];
+  uploading_images = false;
+  images_position_change = false;
 
   inmuebles: Inmueble[];
 
@@ -80,11 +82,15 @@ export class InmueblesComponent implements OnInit {
   }
 
   setInmuebleImagesId(inmueble_images: Inmueble) {
+    this.clearInmuebleImagesId();
     this.inmueble_images = inmueble_images;
   }
 
   clearInmuebleImagesId() {
     this.inmueble_images = null;
+    this.image_envelopes = new Array<InmuebleImageEnvelope>();
+    this.uploading_images = false;
+    this.images_position_change = false;
   }
 
   setNewInmuebleObject() {
@@ -218,48 +224,59 @@ export class InmueblesComponent implements OnInit {
   }
 
   onFileChange(event) {
-    const reader = new FileReader();
     if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        this.image_envelope = new InmuebleImageEnvelope(
-          this.inmueble_images.id,
-          file.name,
-          file.type,
-          reader.result.split(',')[1]
-        );
-      };
+      this.image_envelopes = new Array<InmuebleImageEnvelope>();
+      for (let index = 0; index < event.target.files.length; index++) {
+        const reader = new FileReader();
+        const file = event.target.files[index];
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const image_envelope = new InmuebleImageEnvelope(
+            file.name,
+            file.type,
+            reader.result.split(',')[1]
+          );
+          this.image_envelopes.push(image_envelope);
+        };
+      }
     }
   }
 
-  saveImage() {
-    if (!this.image_envelope) {
+  uploadImages() {
+    if (this.image_envelopes.length <= 0) {
       return;
     }
-    this.imagenService.upload(this.image_envelope).subscribe(
+    this.uploading_images = true;
+    this.imagenService.upload(this.image_envelopes, this.inmueble_images.id).subscribe(
       (value: HttpResponse<any>) => {
         this.image_input_field.nativeElement.value = '';
         // this.toasterService.success('Foto guardada'); # issue flicker
-        this.inmueble_images.fotos.push(value.body.message);
+        for (let index = 0; index < value.body.message.length; index++) {
+          this.inmueble_images.fotos.push(value.body.message[index]);
+        }
+        this.image_envelopes = new Array<InmuebleImageEnvelope>();
+        this.uploading_images = false;
       },
       (error: HttpErrorResponse) => {
         if ((error.status === 401 || error.status === 500) && this.accountService.isAccountPresent()) {
           const refreshcall = this.authenticationService.refreshAccessToken();
           if (refreshcall === null) {
             // nothing to do... we must perform a login... redirect to it
+            this.uploading_images = false;
             this.router.navigate(['/login']);
           }
           refreshcall.subscribe(
             value => {
               // call method again after refreshing token
-              this.saveImage();
+              this.uploadImages();
             },
             (errorRefresh: HttpErrorResponse) => {
               // nothing to do... we must perform a login... redirect to it
+              this.uploading_images = false;
               this.router.navigate(['/login']);
             });
         } else {
+          this.uploading_images = false;
           this.toasterService.error('Error: ' + error.status + ', ' + error.error.message);
         }
       });
@@ -296,7 +313,74 @@ export class InmueblesComponent implements OnInit {
       });
   }
 
-  getReverseOfImagesArray(): string[] {
-    return this.inmueble_images.fotos.reverse();
+  isFirstImage(position: number): boolean {
+    return position === 0;
+  }
+
+  isLastImage(position: number): boolean {
+    if (this.inmueble_images && this.inmueble_images.fotos) {
+      return position >= this.inmueble_images.fotos.length - 1;
+    }
+    return false;
+  }
+
+  swtichImage(position: number, action: number) {
+    // action 0: prev 1: next
+    if (action === 0) {
+      if (this.isFirstImage(position)) {
+        // nothing to do
+        return;
+      }
+      this.images_position_change = true;
+      const temp_value = this.inmueble_images.fotos[position - 1];
+      this.inmueble_images.fotos[position - 1] = this.inmueble_images.fotos[position];
+      this.inmueble_images.fotos[position] = temp_value;
+    }
+    if (action === 1) {
+      if (this.isLastImage(position)) {
+        // nothing to do
+        return;
+      }
+      this.images_position_change = true;
+      const temp_value = this.inmueble_images.fotos[position + 1];
+      this.inmueble_images.fotos[position + 1] = this.inmueble_images.fotos[position];
+      this.inmueble_images.fotos[position] = temp_value;
+    }
+  }
+
+  saveImagePositionChanged() {
+    if (!this.images_position_change) {
+      return;
+    }
+    if (this.inmueble_images && this.inmueble_images.fotos) {
+      this.imagenService.updateList(this.inmueble_images.fotos, this.inmueble_images.id).subscribe(
+        (value) => {
+          this.images_position_change = false;
+          this.toasterService.success('El orden de las fotos fue guardado');
+        },
+        (error) => {
+          if ((error.status === 401 || error.status === 500) && this.accountService.isAccountPresent()) {
+            const refreshcall = this.authenticationService.refreshAccessToken();
+            if (refreshcall === null) {
+              this.images_position_change = false;
+              // nothing to do... we must perform a login... redirect to it
+              this.router.navigate(['/login']);
+            }
+            refreshcall.subscribe(
+              value => {
+                // call method again after refreshing token
+                this.saveImagePositionChanged();
+              },
+              (errorRefresh: HttpErrorResponse) => {
+                this.images_position_change = false;
+                // nothing to do... we must perform a login... redirect to it
+                this.router.navigate(['/login']);
+              });
+          } else {
+            this.images_position_change = false;
+            this.toasterService.error('Error: ' + error.status + ', ' + error.error.message);
+          }
+        });
+    }
   }
 }

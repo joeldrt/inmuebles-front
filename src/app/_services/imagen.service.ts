@@ -17,8 +17,14 @@ export class ImagenService {
     this.resourceUrl = environment.API_URL + 'api/foto';
   }
 
-  upload(inmueble_image_envelope: InmuebleImageEnvelope): Observable<HttpResponse<any>> {
-    return this.http.post<any>(this.resourceUrl + '/upload', inmueble_image_envelope, {observe: 'response'});
+  upload(inmueble_image_envelopes: InmuebleImageEnvelope[], inmueble_id: any): Observable<HttpResponse<any>> {
+    const sending_object = { 'files': inmueble_image_envelopes, 'inmueble_id': inmueble_id };
+    return this.http.post<any>(this.resourceUrl + '/upload', sending_object, {observe: 'response' });
+  }
+
+  updateList(url_list: [string], inmueble_id: any): Observable<HttpResponse<any>> {
+    const sending_object = { 'url_list': url_list, 'inmueble_id': inmueble_id };
+    return this.http.post<any>(this.resourceUrl + '/update_list', sending_object, { observe: 'response' });
   }
 
   delete(inmueble_id: string, foto_path: string): Observable<HttpResponse<any>> {
